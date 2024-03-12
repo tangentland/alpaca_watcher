@@ -118,12 +118,12 @@ def main(): Unit = {
   val g = RunnableGraph.fromGraph(GraphDSL.create() { implicit builder: GraphDSL.Builder[NotUsed] =>
     import GraphDSL.Implicits._
     // sent from actor to stream to "ack" processing of given element
-    val AckMessage = AckingReceiver.Ack
+    val AckMessage = SmaAckingReceiver.Ack
 
     // sent from stream to actor to indicate start, end or failure of stream:
-    val InitMessage = AckingReceiver.StreamInitialized
-    val OnCompleteMessage = AckingReceiver.StreamCompleted
-    val onErrorMessage = (ex: Throwable) => AckingReceiver.StreamFailure(ex)
+    val InitMessage = SmaAckingReceiver.StreamInitialized
+    val OnCompleteMessage = SmaAckingReceiver.StreamCompleted
+    val onErrorMessage = (ex: Throwable) => SmaAckingReceiver.StreamFailure(ex)
 
     val receiver = system.actorOf(Props(new SmaAckingReceiver(target=target, symbols=triggers)))
     val sink = Sink.actorRefWithBackpressure(
